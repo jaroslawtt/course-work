@@ -13,16 +13,6 @@ module.exports = {
     },
     async getKeyboard(type,filter){
         let btn = [];
-        /*if(filter){
-            await axios.get(`http://localhost:4200/api/${type}/${filter}`)
-                .then(response => {
-                    const characters = response.data;
-                    characters.splice(0,5).forEach((value) => {
-                        btn.push([{text: value.name,callback_data: `${type}/${value.id}`}]);
-                    })
-                })
-            return btn
-        }*/
             await axios.get(`http://localhost:4200/api/${type}`)
                 .then(response => {
                     const characters = response.data;
