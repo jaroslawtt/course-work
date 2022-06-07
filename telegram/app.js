@@ -1,8 +1,9 @@
+require(`dotenv`).config();
 const TelegramBot = require("node-telegram-bot-api");
 const axios = require(`axios`);
 const path = require(`path`)
 const  { getCaption,getPagination,getKeyboard, getInfo ,greetings, mainKeyboard} = require(`./helper.js`);
-const bot = new TelegramBot("5325904368:AAEnDRaRj7JDnIn1tFfXfIoFADW9-kKlfC4",{
+const bot = new TelegramBot(process.env.TELEGRAM_TOKEN,{
     polling:{
         interval:300,
         autoStart: true,
@@ -23,7 +24,6 @@ bot.onText(/\/start/, async (msg) => {
 bot.onText(/👽Characters/, async (msg) => {
     const chatId = msg.chat.id;
     let inline_keyboard = await getKeyboard(`character`);
-    inline_keyboard = inline_keyboard.concat([[{ text: `➡️`, callback_data: `1 character`}]]);
     bot.sendPhoto(chatId, path.join(__dirname, `img`, `rick-and-morty-book-four-9781620105948_hr.jpg`), {
         caption: `👽Characters`,
         reply_markup: {
@@ -38,7 +38,6 @@ bot.onText(/👽Characters/, async (msg) => {
 bot.onText(/🎥Episodes/, async (msg) => {
     const chatId = msg.chat.id;
     let inline_keyboard = await getKeyboard(`episode`);
-    inline_keyboard = inline_keyboard.concat([[{ text: `➡️`, callback_data: `1 episode`}]]);
     bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
         caption: `👽Episodes`,
         reply_markup: {
@@ -54,7 +53,6 @@ bot.onText(/🌌Locations/, async (msg) => {
     const chatId = msg.chat.id;
     console.log(msg)
     let inline_keyboard = await getKeyboard(`location`);
-    inline_keyboard = inline_keyboard.concat([[{ text: `➡️`, callback_data: `1 episode`}]]);
     bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
         caption: `👽Episodes`,
         reply_markup: {

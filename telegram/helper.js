@@ -20,7 +20,7 @@ module.exports = {
                         btn.push([{text: value.name,callback_data: `${type}/${value.id}`}]);
                     })
                 })
-            return btn
+            return btn.concat([[{ text: `➡️`, callback_data: `1 ${type}`}]])
     },
     mainKeyboard:  [
         [{text: `👽Characters`},{text: `🎥Episodes`}],
