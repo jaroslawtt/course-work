@@ -1,4 +1,2 @@
 */node_modules
-telegram/.env
-web_app
-.idea
+*/.env
