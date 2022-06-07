@@ -1,5 +1,3 @@
-require('dotenv').config();
-console.log(process.env);
 const TelegramBot = require("node-telegram-bot-api");
 const axios = require(`axios`);
 const path = require(`path`)
