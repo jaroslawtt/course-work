@@ -1,8 +1,10 @@
+require('dotenv').config();
+console.log(process.env);
 const TelegramBot = require("node-telegram-bot-api");
 const axios = require(`axios`);
 const path = require(`path`)
 const  { getCaption,getPagination,getKeyboard, getInfo ,greetings, mainKeyboard} = require(`./helper.js`);
-const bot = new TelegramBot("5325904368:AAEnDRaRj7JDnIn1tFfXfIoFADW9-kKlfC4",{
+const bot = new TelegramBot(process.env[`TELEGRAM_TOKEN`],{
     polling:{
         interval:300,
         autoStart: true,
