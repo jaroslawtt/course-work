@@ -1,0 +1,21 @@
+{
+  "type": "module",
+  "name": "api",
+  "version": "1.0.0",
+  "description": "REST API",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "rickmortyapi": "^1.0.0"
+  }
+}
