@@ -3,7 +3,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const axios = require(`axios`);
 const path = require(`path`)
 const  { getCaption,getPagination,getKeyboard, getInfo ,greetings, mainKeyboard} = require(`./helper.js`);
-const bot = new TelegramBot(process.env.TELEGRAM_TOKEN,{
+const bot = new TelegramBot(JSON.parse(process.env.TELEGRAM_TOKEN),{
     polling:{
         interval:300,
         autoStart: true,
