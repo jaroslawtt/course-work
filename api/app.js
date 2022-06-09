@@ -1,10 +1,13 @@
-require(`dotenv`).config({path: "./vars/.env"});
+import {config} from "dotenv";
+config({path: "./vars/.env"})
 import express from "express";
 import {controllerGetCharacter as getCharacter, controllerGetCharacters as getCharacters} from "./controllers/character/characterController.js";
 import {controllerGetLocation as getLocation, controllerGetLocations as getLocations} from "./controllers/location/locationController.js";
 import {controllerGetEpisode as getEpisode, controllerGetEpisodes as getEpisodes} from "./controllers/episode/episodeController.js";
 import {controllerGetReviews as getReviews, controllerAddReview as addReview, controllerClearReviews as clearReviews, controllerDeleteReview as deleteReview, controllerEditReview as editReview} from "./controllers/review/reviewController.js";
-const PORT = process.env.PORT || 4200;
+console.log(process.env.port)
+const PORT = Number(process.env.port) || 4200;
+console.log(process.env.PORT)
 const jsonParser = express.json();
 let app = new express();
 const apiRouter = express.Router();

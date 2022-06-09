@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="595d2dd5-87fe-4077-a6f2-bbf4aa7b2743" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/api/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/api/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/telegram/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/telegram/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vars/.env" beforeDir="false" afterPath="$PROJECT_DIR$/vars/.env" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +56,7 @@
       <updated>1654607287848</updated>
       <workItem from="1654607289093" duration="2968000" />
       <workItem from="1654610365254" duration="992000" />
-      <workItem from="1654777775787" duration="2382000" />
+      <workItem from="1654777775787" duration="3683000" />
     </task>
     <servers />
   </component>
