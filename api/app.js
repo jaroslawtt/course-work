@@ -7,7 +7,6 @@ import {controllerGetEpisode as getEpisode, controllerGetEpisodes as getEpisodes
 import {controllerGetReviews as getReviews, controllerAddReview as addReview, controllerClearReviews as clearReviews, controllerDeleteReview as deleteReview, controllerEditReview as editReview} from "./controllers/review/reviewController.js";
 console.log(process.env.port)
 const PORT = Number(process.env.port) || 4200;
-console.log(process.env.PORT)
 const jsonParser = express.json();
 let app = new express();
 const apiRouter = express.Router();
