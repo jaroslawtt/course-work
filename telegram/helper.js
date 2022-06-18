@@ -11,7 +11,7 @@ module.exports = {
             })
         return results;
     },
-    async getKeyboard(type,filter){
+    async getKeyboard(type,){
         let btn = [];
             await axios.get(`http://localhost:4200/api/${type}`)
                 .then(response => {
@@ -74,11 +74,11 @@ Episode characters:`
     },
     greetings: `
 👋Hey, buddy
-👽 I'm created for "true fan" of "Rick and Morty", what can I do?
+😎 I'm created for a "true fan" of "Rick and Morty", so what can I do?
 
-🔝┏ Describing main characters
-🆕┣ 
-📻┣ 
-🔍┗ 
+👽┏ Describe main characters
+🌄┣ Describe locations
+🎬┣ Describe episodes
+📓┗ Let you a possibility to leave episode reviews
     `
 }

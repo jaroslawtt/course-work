@@ -23,63 +23,82 @@ bot.onText(/\/start/, async (msg) => {
 })
 bot.onText(/👽Characters/, async (msg) => {
     const chatId = msg.chat.id;
-    let inline_keyboard = await getKeyboard(`character`);
-    bot.sendPhoto(chatId, path.join(__dirname, `img`, `rick-and-morty-book-four-9781620105948_hr.jpg`), {
-        caption: `👽Characters`,
-        reply_markup: {
-            inline_keyboard,
-            resize_keyboard: false
-        }
-    })
-        .catch(e => {
-
+    try{
+        let inline_keyboard = await getKeyboard(`character`);
+        bot.sendPhoto(chatId, path.join(__dirname, `img`, `rick-and-morty-book-four-9781620105948_hr.jpg`), {
+            caption: `👽Characters`,
+            reply_markup: {
+                inline_keyboard,
+                resize_keyboard: false
+            }
         })
+            .catch(e => {
+                throw e;
+            })
+    }catch{
+        await bot.sendMessage(chatId, `Ooops, something went     wrong`)
+    }
+
 })
 bot.onText(/🎥Episodes/, async (msg) => {
     const chatId = msg.chat.id;
-    let inline_keyboard = await getKeyboard(`episode`);
-    bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
-        caption: `👽Episodes`,
-        reply_markup: {
-            inline_keyboard,
-            resize_keyboard: false
-        }
-    })
-        .catch(()=> {
-            bot.sendMessage(chatId, `Ooops, went wrong`)
-        }  )
+    try{
+        let inline_keyboard = await getKeyboard(`episode`);
+        bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
+            caption: `👽Episodes`,
+            reply_markup: {
+                inline_keyboard,
+                resize_keyboard: false
+            }
+        })
+            .catch((e)=> {
+               throw e;
+            }  )
+    }catch{
+       await bot.sendMessage(chatId, `Ooops, went wrong`)
+    }
+
 })
 bot.onText(/🌌Locations/, async (msg) => {
     const chatId = msg.chat.id;
     console.log(msg)
-    let inline_keyboard = await getKeyboard(`location`);
-    bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
-        caption: `👽Episodes`,
-        reply_markup: {
-            inline_keyboard,
-            resize_keyboard: false
-        }
-    })
-        .catch(()=> {
-            bot.sendMessage(chatId, `Ooops, went wrong`)
-        }  )
+    try{
+        let inline_keyboard = await getKeyboard(`location`);
+        bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
+            caption: `👽Episodes`,
+            reply_markup: {
+                inline_keyboard,
+                resize_keyboard: false
+            }
+        })
+            .catch(e => {
+                throw e;
+            })
+    }catch {
+        await bot.sendMessage(chatId, `Ooops, went wrong`);
+    }
 })
 bot.onText(/\/[a-z]+(\s.+)/, async (msg,[source, sentence]) => {
        const chat_id = msg.chat.id;
-       const results = await getInfo(source,sentence);
-       for (let result of results) {
-        if(source.match(/\/character/)){
-            await bot.sendPhoto(chat_id, `${result.image}`, {
-                caption: await getCaption(result),
-                parse_mode: `HTML`,
-            })
-        }
-        else{
-            await bot.sendMessage(chat_id, await getCaption(result), {
-                parse_mode: `HTML`,
-            })
-        }
-}})
+       try {
+           const results = await getInfo(source,sentence);
+           for (let result of results) {
+               if(source.match(/\/character/)){
+                   await bot.sendPhoto(chat_id, `${result.image}`, {
+                       caption: await getCaption(result),
+                       parse_mode: `HTML`,
+                   })
+               }
+               else{
+                   await bot.sendMessage(chat_id, await getCaption(result), {
+                       parse_mode: `HTML`,
+                   })
+               }
+           }
+       }catch{
+           await bot.sendMessage(chat_id, `Ooops, went wrong`);
+       }
+    })
 bot.on('callback_query', async (msg) => {
     const chat_id = msg.message.chat.id;
     const message_id = msg.message.message_id;
