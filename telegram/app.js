@@ -106,13 +106,19 @@ bot.on('callback_query', async (msg) => {
         console.log(msg.data)
             axios.get(`http://localhost:4200/api/${msg.data}`)
                 .then(async (response) => {
-                    const {data} = response.data;
+                    const { data } = response.data;
                     if (data.hasOwnProperty(`image`)) {
                         await bot.sendPhoto(chat_id, `${data.image}`, {
                             caption: await getCaption(data),
                             parse_mode: `HTML`,
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [{text: `Puk`, callback_data: `favourite/${data.id}`}]
+                                ]
+                            }
                         })
-                    } else {
+                    }
+                    else {
                         await bot.sendMessage(chat_id, await getCaption(data), {
                             parse_mode: `HTML`,
                         })

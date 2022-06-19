@@ -11,6 +11,7 @@ export async function controllerGetEpisode(req, res){
                 const episode = await getEpisodes({
                     episode: req.params[`id`]
                 })
+                console.log(episode)
                 res.setHeader('Content-Type', 'application/json');
                 res.end(JSON.stringify(episode))
             }
