@@ -3,6 +3,8 @@ const TelegramBot = require("node-telegram-bot-api");
 const axios = require(`axios`);
 const path = require(`path`)
 const  { getCaption,getPagination,getKeyboard, getInfo ,greetings, mainKeyboard} = require(`./helper.js`);
+const url = require("url");
+const {getToggleButton} = require("./helper");
 const bot = new TelegramBot(JSON.parse(process.env.TELEGRAM_TOKEN),{
     polling:{
         interval:300,
@@ -61,7 +63,6 @@ bot.onText(/🎥Episodes/, async (msg) => {
 })
 bot.onText(/🌌Locations/, async (msg) => {
     const chatId = msg.chat.id;
-    console.log(msg)
     try{
         let inline_keyboard = await getKeyboard(`location`);
         bot.sendPhoto(chatId, path.join(__dirname, `img`, `Rick-and-Morty-фэндомы-продолжение-4464365.jpeg`), {
@@ -75,6 +76,20 @@ bot.onText(/🌌Locations/, async (msg) => {
                 throw e;
             })
     }catch {
+        await bot.sendMessage(chatId, `Ooops, went wrong`);
+    }
+})
+bot.onText(/❤Favourites/, async (msg) => {
+    const chatId = msg.chat.id;
+    try{
+       await bot.sendMessage(chatId,`Favourites:`, {
+           reply_markup: {
+               keyboard: [
+                   [{text: `--favour-characters--`},{text: `--favour-episodes--`},{text: `--favour-locations--`}],
+               ]
+           }
+       })
+    }catch (e) {
         await bot.sendMessage(chatId, `Ooops, went wrong`);
     }
 })
@@ -96,31 +111,106 @@ bot.onText(/\/[a-z]+(\s.+)/, async (msg,[source, sentence]) => {
                }
            }
        }catch{
-           await bot.sendMessage(chat_id, `Ooops, went wrong`);
+           await bot.sendMessage(chat_id, `Ooops, something went wrong...`);
        }
     })
+bot.onText(/--favour-locations--/, async (msg) => {
+   const { message_id } = msg;
+   const  { id: user_id } = msg.from;
+   const { id: chat_id } = msg.chat;
+   /*await bot.deleteMessage(chat_id, message_id);*/
+   await axios.get(`http://localhost:4200/api/favourite/location?id=${user_id}`)
+       .then(async response => {
+           if(response.data.length === 0){
+              await bot.sendMessage(chat_id, `Not yet`)
+           }
+           else{
+                for (let id of response.data){
+                    let data = await axios.get(`http://localhost:4200/api/location/${id}`).then(response => response.data);
+                    await bot.sendMessage(chat_id, await getCaption(data), {
+                        parse_mode: `HTML`,
+                    })
+                }
+           }
+       })
+})
+bot.onText(/--favour-characters--/, async msg => {
+    const { message_id } = msg;
+    const  { id: user_id } = msg.from;
+    const { id: chat_id } = msg.chat;
+   /* await bot.deleteMessage(chat_id, message_id);*/
+    await axios.get(`http://localhost:4200/api/favourite/character?id=${user_id}`)
+        .then(async response => {
+            if(response.data.length === 0){
+               await bot.sendMessage(chat_id, `Not yet`);
+            }
+            else{
+                for(let id of response.data){
+                   let { data }  = await axios.get(`http://localhost:4200/api/character/${id}`).then(response => response.data);
+                   let url = `http://localhost:4200/api/favourite/character/${id}?id=${user_id}`;
+                   let query = `character/${id}`;
+                     await bot.sendPhoto(chat_id, `${data?.image}`, {
+                        caption: await getCaption(data),
+                        parse_mode: `HTML`,
+                        reply_markup: {
+                            inline_keyboard: await getToggleButton(query,url),
+                        }
+                    })
+                }
+            }
+        })
+})
+bot.onText(/--favour-episodes--/, async msg => {
+    const { message_id } = msg;
+    const  { id: user_id } = msg.from;
+    const { id: chat_id } = msg.chat;
+    await bot.deleteMessage(chat_id,message_id);
+    await axios.get(`http://localhost:4200/api/favourite/episode?id=${user_id}`)
+        .then(async response => {
+            if(response.data.length === 0){
+                await bot.sendMessage(chat_id,`Not yet`);
+            }
+            else{
+                for(let id of response.data){
+                    let data = await axios.get(`http://localhost:4200/api/character/${id}`).then(data => data.data);
+                    let url = `http://localhost:4200/api/favourite/episode/${id}?id=${user_id}`;
+                    let query = `episode/${id}`;
+                    await bot.sendMessage(chat_id, await getCaption(data),{
+                        reply_markup: {
+                            inline_keyboard: await getToggleButton(query,url),
+                        }
+                    })
+                }
+            }
+        })
+        .catch(async () => {
+            await bot.sendMessage(chat_id,`Ooops, something went wrong...`)
+        })
+})
 bot.on('callback_query', async (msg) => {
     const chat_id = msg.message.chat.id;
     const message_id = msg.message.message_id;
-    if(isNaN(parseInt(msg.data))) {
-        console.log(msg.data)
+    if(isNaN(parseInt(msg.data)) && !msg.data.includes(`favourite`)) {
             axios.get(`http://localhost:4200/api/${msg.data}`)
                 .then(async (response) => {
                     const { data } = response.data;
+                    let url = `http://localhost:4200/api/favourite/${msg.data}?id=${msg.from.id}`;
+                    let query = msg.data;
                     if (data.hasOwnProperty(`image`)) {
                         await bot.sendPhoto(chat_id, `${data.image}`, {
                             caption: await getCaption(data),
                             parse_mode: `HTML`,
                             reply_markup: {
-                                inline_keyboard: [
-                                    [{text: `Puk`, callback_data: `favourite/${data.id}`}]
-                                ]
+                                inline_keyboard: await getToggleButton(query,url),
                             }
                         })
                     }
                     else {
                         await bot.sendMessage(chat_id, await getCaption(data), {
                             parse_mode: `HTML`,
+                            reply_markup: {
+                                inline_keyboard: await getToggleButton(query,url)
+                            }
                         })
                     }
                 })
@@ -128,12 +218,21 @@ bot.on('callback_query', async (msg) => {
                     console.log(err);
                 })
     }
+    else if(isNaN(parseInt(msg.data)) && msg.data.includes(`favourite`)){
+        axios.patch(`http://localhost:4200/api/${msg.data}`, {id: `${msg.from.id}`})
+            .then(async () => {
+                console.log(`Here we are!!!`)
+                await bot.editMessageReplyMarkup(JSON.stringify({
+                    inline_keyboard: [[{text: await axios.get(`http://localhost:4200/api/${msg.data}?id=${msg.from.id}`)
+                            .then(response => response.data) ? `Unfavourite<3`:`Favourite<3`, callback_data: `${msg.data}`}]]
+                }, ), {chat_id,
+                    message_id})
+            })
+    }
     else{
         const query = msg.data;
         const current = parseInt(msg.data);
         const essence = query.split(` `)[query.split(` `).length - 1];
-        console.log(essence)
-        let btn = [];
         axios.get(`http://localhost:4200/api/${essence}`)
             .then(response => {
                 console.log(response);

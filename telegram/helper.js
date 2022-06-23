@@ -1,5 +1,11 @@
 const axios = require("axios");
 module.exports = {
+    async getToggleButton(query,url){
+      return  [
+            [{text: await axios.get(url)
+                    .then(response => response.data) ? `Unfavourite<3`:`Favourite<3`, callback_data: `favourite/${query}`}]
+        ]
+    },
     async getInfo(type,filter){
         let results;
         await axios.get(`http://localhost:4200/api${type.match(/\/[a-z]+/)}/${filter.trim()}`)
@@ -24,7 +30,7 @@ module.exports = {
     },
     mainKeyboard:  [
         [{text: `👽Characters`},{text: `🎥Episodes`}],
-        [ {text: `🌌Locations`}, {text: `📓Reviews`, web_app: {url: `https://uk.reactjs.org/`}}]
+        [ {text: `🌌Locations`}, {text: `❤Favourites`}]
     ],
     async getCaption(data){
         if(data.hasOwnProperty(`status`)){
@@ -40,9 +46,6 @@ module.exports = {
 Type: ${data.type}
 Dimension: ${data.dimension}
 `
-        }
-        else if(data.hasOwnProperty(`description`)){
-
         }
         else{
             let res = `<i>Episode name:</i><b> ${data.name}</b>
@@ -79,6 +82,6 @@ Episode characters:`
 👽┏ Describe main characters
 🌄┣ Describe locations
 🎬┣ Describe episodes
-📓┗ Let you a possibility to leave episode reviews
+📓┗ Mark favourites characters/episodes/locations
     `
 }
