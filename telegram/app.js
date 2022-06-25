@@ -85,7 +85,7 @@ bot.onText(/❤Favourites/, async (msg) => {
        await bot.sendMessage(chatId,`Favourites:`, {
            reply_markup: {
                keyboard: [
-                   [{text: `--favour-characters--`},{text: `--favour-episodes--`},{text: `--favour-locations--`}],
+                   [{text: `Characters`},{text: `Episodes`},{text: `Locations`}],
                ]
            }
        })
@@ -95,18 +95,30 @@ bot.onText(/❤Favourites/, async (msg) => {
 })
 bot.onText(/\/[a-z]+(\s.+)/, async (msg,[source, sentence]) => {
        const chat_id = msg.chat.id;
+       const { message_id } = msg;
+       const { id:user_id } = msg.from;
+       const type = source.split(` `)[0];
        try {
            const results = await getInfo(source,sentence);
            for (let result of results) {
+               let query = `${type.substring(1)}/${result.id}`;
+               console.log(query);
+               let url = `http://localhost:4200/api/favourite${type}/${result.id}?id=${user_id}`;
                if(source.match(/\/character/)){
                    await bot.sendPhoto(chat_id, `${result.image}`, {
                        caption: await getCaption(result),
                        parse_mode: `HTML`,
+                       reply_markup: {
+                           inline_keyboard: await getToggleButton(query,url),
+                       }
                    })
                }
                else{
                    await bot.sendMessage(chat_id, await getCaption(result), {
                        parse_mode: `HTML`,
+                       reply_markup: {
+                           inline_keyboard: await getToggleButton(query,url),
+                       }
                    })
                }
            }
@@ -114,11 +126,10 @@ bot.onText(/\/[a-z]+(\s.+)/, async (msg,[source, sentence]) => {
            await bot.sendMessage(chat_id, `Ooops, something went wrong...`);
        }
     })
-bot.onText(/--favour-locations--/, async (msg) => {
+bot.onText(/Locations/, async (msg) => {
    const { message_id } = msg;
    const  { id: user_id } = msg.from;
    const { id: chat_id } = msg.chat;
-   /*await bot.deleteMessage(chat_id, message_id);*/
    await axios.get(`http://localhost:4200/api/favourite/location?id=${user_id}`)
        .then(async response => {
            if(response.data.length === 0){
@@ -134,7 +145,7 @@ bot.onText(/--favour-locations--/, async (msg) => {
            }
        })
 })
-bot.onText(/--favour-characters--/, async msg => {
+bot.onText(/Characters/, async msg => {
     const { message_id } = msg;
     const  { id: user_id } = msg.from;
     const { id: chat_id } = msg.chat;
@@ -160,7 +171,7 @@ bot.onText(/--favour-characters--/, async msg => {
             }
         })
 })
-bot.onText(/--favour-episodes--/, async msg => {
+bot.onText(/Episodes/, async msg => {
     const { message_id } = msg;
     const  { id: user_id } = msg.from;
     const { id: chat_id } = msg.chat;
@@ -209,7 +220,7 @@ bot.on('callback_query', async (msg) => {
                         await bot.sendMessage(chat_id, await getCaption(data), {
                             parse_mode: `HTML`,
                             reply_markup: {
-                                inline_keyboard: await getToggleButton(query,url)
+                                inline_keyboard: await getToggleButton(query,url),
                             }
                         })
                     }
@@ -221,12 +232,15 @@ bot.on('callback_query', async (msg) => {
     else if(isNaN(parseInt(msg.data)) && msg.data.includes(`favourite`)){
         axios.patch(`http://localhost:4200/api/${msg.data}`, {id: `${msg.from.id}`})
             .then(async () => {
-                console.log(`Here we are!!!`)
+                let query = msg.data.split("/").splice(1).join('/');
+                let url = `http://localhost:4200/api/${msg.data}?id=${msg.from.id}`
                 await bot.editMessageReplyMarkup(JSON.stringify({
-                    inline_keyboard: [[{text: await axios.get(`http://localhost:4200/api/${msg.data}?id=${msg.from.id}`)
-                            .then(response => response.data) ? `Unfavourite<3`:`Favourite<3`, callback_data: `${msg.data}`}]]
+                    inline_keyboard: await getToggleButton(query,url),
                 }, ), {chat_id,
                     message_id})
+            })
+            .catch(async ()=> {
+                await bot.sendMessage(chat_id, `Ooops, something went wrong....`)
             })
     }
     else{

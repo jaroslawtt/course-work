@@ -3,7 +3,7 @@ module.exports = {
     async getToggleButton(query,url){
       return  [
             [{text: await axios.get(url)
-                    .then(response => response.data) ? `Unfavourite<3`:`Favourite<3`, callback_data: `favourite/${query}`}]
+                    .then(response => response.data) ? `💔`:`🧡`, callback_data: `favourite/${query}`}]
         ]
     },
     async getInfo(type,filter){
