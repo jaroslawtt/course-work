@@ -89,3 +89,20 @@ export async function controllerPatchFavourite(req,res){
             console.log(e);
         })
 }
+export async function controllerPostFavourite(req,res){
+    const { id: user_id } = req.body;
+    User
+        .findOne({user_id})
+        .then(response => {
+            console.log(response)
+            if(!response){
+                let newUser = new User({...response, user_id});
+                User.insertMany(newUser);
+                newUser.update();
+                res.sendStatus(200);
+            }
+            else{
+                res.sendStatus(200);
+            }
+        })
+}

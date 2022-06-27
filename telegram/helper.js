@@ -67,6 +67,7 @@ Episode characters:`
     },
     backButton: [{text: `Back`, callback_data: `Back`}]
     ,
+
     getPagination(query, maxpage){
         let current = parseInt(query);
         let keys = [];

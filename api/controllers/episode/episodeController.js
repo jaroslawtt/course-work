@@ -1,4 +1,4 @@
-import {getEpisode, getEpisodes} from "rickmortyapi";
+import { getEpisode, getEpisodes } from "rickmortyapi";
 
 export async function controllerGetEpisodes(req, res) {
     const episodes = await getEpisodes();
