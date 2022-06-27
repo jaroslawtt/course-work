@@ -1,5 +1,5 @@
-import {getCharacters} from "rickmortyapi";
-import {getCharacter} from "rickmortyapi";
+import { getCharacters } from "rickmortyapi";
+import { getCharacter } from "rickmortyapi";
 
 export async function controllerGetCharacters(req, res) {
     const characters = await getCharacters();
