@@ -2,7 +2,6 @@ import User from "../../models/users.js";
 export async function controllerGetFavourites(req,res) {
     const {id:user_id} = req.query;
     const type = req.params[`type`];
-    console.log(user_id,type)
     User.findOne({
         user_id,
     })
@@ -67,10 +66,8 @@ export async function controllerPatchFavourite(req,res){
                     res.sendStatus(200);
                 }
                 else{
-                    console.log(response)
                     favourites[type].push(item_id);
                     newUser =  { user_id, favourites };
-                    console.log(newUser);
                     await User.findOneAndReplace({ user_id }, newUser)
                         .then(()=> {
                             User.update();
@@ -94,7 +91,6 @@ export async function controllerPostFavourite(req,res){
     User
         .findOne({user_id})
         .then(response => {
-            console.log(response)
             if(!response){
                 let newUser = new User({...response, user_id});
                 User.insertMany(newUser);

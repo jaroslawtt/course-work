@@ -22,7 +22,6 @@ apiRouter.get(`/favourite/:type`, getFavourites);
 apiRouter.get(`/favourite/:type/:id`, getFavouriteBool)
 apiRouter.patch(`/favourite/:type/:id`, jsonParser, patchFavourite);
 apiRouter.post(`/favourite`, jsonParser, postFavourite)
-app.use(`/api`,apiRouter);
 mongoose.connect(process.env.dbUrl,{ useUnifiedTopology: true, useNewUrlParser: true}, (err) => {
     if(err) throw err;
     app.listen(PORT,() => {

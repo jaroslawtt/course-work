@@ -1,7 +1,6 @@
 import {getLocation,getLocations} from "rickmortyapi";
 export async function controllerGetLocations(req,res){
     const locations = await getLocations();
-    console.log(locations.data);
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(locations.data.results));
 }
@@ -14,12 +13,8 @@ export async function controllerGetLocation(req,res){
         res.end(JSON.stringify(location));
     }
     else{
-        try {
             const location = await getLocation(parseInt(req.params[`id`]));
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(location));
-        }catch (e) {
-
-        }
     }
 }

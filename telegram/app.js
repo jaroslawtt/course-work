@@ -99,14 +99,12 @@ bot.onText(/❤Favourites/, async (msg) => {
 })
 bot.onText(/\/[a-z]+(\s.+)/, async (msg,[source, sentence]) => {
        const chat_id = msg.chat.id;
-       const { message_id } = msg;
        const { id:user_id } = msg.from;
        try {
            const type = source.split(` `)[0];
            const results = await getInfo(source,sentence);
            for (let result of results) {
                let query = `${type.substring(1)}/${result.id}`;
-               console.log(query);
                let url = `http://localhost:4200/api/favourite${type}/${result.id}?id=${user_id}`;
                if(source.match(/\/character/)){
                    await bot.sendPhoto(chat_id, `${result.image}`, {
@@ -218,7 +216,6 @@ bot.onText(/📀Episodes/, async msg => {
                 else{
                     for(let id of response.data){
                         let data = await axios.get(`http://localhost:4200/api/episode/${id}`).then(data => data.data);
-                        console.log(data);
                         let url = `http://localhost:4200/api/favourite/episode/${id}?id=${user_id}`;
                         let query = `episode/${id}`;
                         await bot.sendMessage(chat_id, await getCaption(data.data),{
@@ -281,7 +278,6 @@ bot.on('callback_query', async (msg) => {
             const essence = query.split(` `)[query.split(` `).length - 1];
             axios.get(`http://localhost:4200/api/${essence}`)
                 .then(response => {
-                    console.log(response);
                     let results = response.data;
                     let btn = [];
                     for(let i = current * 5; i < current * 5 + 5; i++){
